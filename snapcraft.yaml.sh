@@ -45,6 +45,8 @@ fi
 
 # Write snapcraft.yaml for this config
 
+SNAPCRAFT_PART_INSTALL="\$SNAPCRAFT_PART_INSTALL"
+
 envsubst << EOF > ${__dirname}/snapcraft.yaml
 name: node
 version: '${NODE_VERSION:0:30}'

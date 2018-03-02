@@ -28,8 +28,8 @@ parts:
     prepare: |
       ./configure --prefix=/ --release-urlbase=https://nodejs.org/download/release/ --tag=
     install: |
-      mkdir -p /etc
-      echo "prefix = /usr/local" >> /etc/npmrc
+      mkdir -p 30994SNAPCRAFT_PART_INSTALL/etc
+      echo "prefix = /usr/local" >> 30994SNAPCRAFT_PART_INSTALL/etc/npmrc
   yarn:
     source-type: tar
     source: https://yarnpkg.com/latest.tar.gz
