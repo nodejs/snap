@@ -45,9 +45,7 @@ fi
 
 # Write snapcraft.yaml for this config
 
-SNAPCRAFT_PART_INSTALL="\$SNAPCRAFT_PART_INSTALL"
-
-envsubst << EOF > ${__dirname}/snapcraft.yaml
+cat > ${__dirname}/snapcraft.yaml << EOF
 name: node
 version: '${NODE_VERSION:0:30}'
 summary: Node.js
@@ -78,8 +76,8 @@ parts:
     prepare: |
       ./configure --prefix=/ --release-urlbase=https://nodejs.org/download/${NODE_DISTTYPE}/ --tag=${NODE_TAG}
     install: |
-      mkdir -p $SNAPCRAFT_PART_INSTALL/etc
-      echo "prefix = /usr/local" >> $SNAPCRAFT_PART_INSTALL/etc/npmrc
+      mkdir -p \$SNAPCRAFT_PART_INSTALL/etc
+      echo "prefix = /usr/local" >> \$SNAPCRAFT_PART_INSTALL/etc/npmrc
   yarn:
     source-type: tar
     source: https://yarnpkg.com/latest.tar.gz
