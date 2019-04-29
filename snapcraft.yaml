@@ -14,6 +14,8 @@ apps:
     command: bin/npm
   yarn:
     command: bin/yarn.js
+  yarnpkg:
+    command: bin/yarn.js
 
 parts:
   node:
