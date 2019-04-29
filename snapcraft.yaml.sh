@@ -69,6 +69,8 @@ apps:
     command: bin/npx
   yarn:
     command: bin/yarn.js
+  yarnpkg:
+    command: bin/yarn.js
 
 parts:
   node:
