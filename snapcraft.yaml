@@ -1,5 +1,5 @@
 name: node
-version: '13.0.0-nightly201905014206e7c2'
+version: '13.0.0-nightly20190502e5c8be2b'
 summary: Node.js
 description: |
   A JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, npm, is the largest ecosystem of open source libraries in the world. https://nodejs.org/
@@ -23,13 +23,13 @@ parts:
   node:
     plugin: make
     source-type: tar
-    source: https://nodejs.org/download/nightly/v13.0.0-nightly201905014206e7c2c4/node-v13.0.0-nightly201905014206e7c2c4.tar.gz
+    source: https://nodejs.org/download/nightly/v13.0.0-nightly20190502e5c8be2bd0/node-v13.0.0-nightly20190502e5c8be2bd0.tar.gz
     build-packages:
       - g++
       - make
       - python2.7
     prepare: |
-      ./configure --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly201905014206e7c2c4
+      ./configure --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly20190502e5c8be2bd0
     install: |
       mkdir -p $SNAPCRAFT_PART_INSTALL/etc
       echo "prefix = /usr/local" >> $SNAPCRAFT_PART_INSTALL/etc/npmrc
