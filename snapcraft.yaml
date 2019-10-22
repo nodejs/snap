@@ -24,6 +24,10 @@ parts:
     plugin: make
     source-type: tar
     source: https://nodejs.org/download/release/v13.0.0/node-v13.0.0.tar.gz
+    override-pull: |
+      sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+      sudo apt update
+      sudo apt --yes install gcc-6 g++-6
     build-packages:
       - g++
       - make

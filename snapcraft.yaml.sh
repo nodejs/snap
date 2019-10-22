@@ -77,6 +77,10 @@ parts:
     plugin: make
     source-type: tar
     source: https://nodejs.org/download/${NODE_DISTTYPE}/v${NODE_VERSION}/node-v${NODE_VERSION}.tar.gz
+    override-pull: |
+      sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+      sudo apt update
+      sudo apt --yes install gcc-6 g++-6
     build-packages:
       - g++
       - make
