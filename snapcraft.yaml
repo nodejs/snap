@@ -22,7 +22,7 @@ apps:
 parts:
   gcc-6:
     plugin: nil
-      override-pull: 'true'
+    override-pull: 'true'
     override-build: |
       sudo apt --yes install software-properties-common
       sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
