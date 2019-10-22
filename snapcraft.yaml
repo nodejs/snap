@@ -24,12 +24,17 @@ parts:
     plugin: make
     source-type: tar
     source: https://nodejs.org/download/nightly/v13.0.0-nightly2019102271b342f937/node-v13.0.0-nightly2019102271b342f937.tar.gz
+    override-pull: |
+      sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+      sudo apt update
+      sudo apt --yes install gcc-6 g++-6
     build-packages:
       - g++
       - make
       - python2.7
     prepare: |
-      ./configure --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly2019102271b342f937
+      gcc -v
+      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly2019102271b342f937
     install: |
       mkdir -p $SNAPCRAFT_PART_INSTALL/etc
       echo "prefix = /usr/local" >> $SNAPCRAFT_PART_INSTALL/etc/npmrc
