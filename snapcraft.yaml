@@ -33,7 +33,8 @@ parts:
       - make
       - python2.7
     prepare: |
-      ./configure --prefix=/ --release-urlbase=https://nodejs.org/download/release/ --tag=
+      gcc -v
+      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/release/ --tag=
     install: |
       mkdir -p $SNAPCRAFT_PART_INSTALL/etc
       echo "prefix = /usr/local" >> $SNAPCRAFT_PART_INSTALL/etc/npmrc
