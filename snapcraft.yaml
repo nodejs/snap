@@ -34,7 +34,8 @@ parts:
     plugin: make
     source-type: tar
     source: https://nodejs.org/download/release/v13.0.0/node-v13.0.0.tar.gz
-    make-parameters: V=
+    make-parameters:
+      - V=
     prepare: |
       gcc -v
       ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/release/ --tag=

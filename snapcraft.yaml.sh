@@ -87,7 +87,8 @@ parts:
     plugin: make
     source-type: tar
     source: https://nodejs.org/download/${NODE_DISTTYPE}/v${NODE_VERSION}/node-v${NODE_VERSION}.tar.gz
-    make-parameters: V=
+    make-parameters:
+      - V=
     prepare: |
       gcc -v
       ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/${NODE_DISTTYPE}/ --tag=${NODE_TAG}
