@@ -73,16 +73,27 @@ apps:
     command: bin/yarn.js
 
 parts:
+  gcc-6:
+    plugin: nil
+    override-pull: 'true'
+    override-build: |
+      sudo apt --yes install software-properties-common
+      sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+      sudo apt update
+      sudo apt --yes install gcc-6 g++-6
+    override-stage: 'true'
+    override-prime: 'true'
   node:
     plugin: make
     source-type: tar
     source: https://nodejs.org/download/${NODE_DISTTYPE}/v${NODE_VERSION}/node-v${NODE_VERSION}.tar.gz
-    build-packages:
-      - g++
-      - make
-      - python2.7
+    make-parameters:
+      - V=
     prepare: |
-      ./configure --prefix=/ --release-urlbase=https://nodejs.org/download/${NODE_DISTTYPE}/ --tag=${NODE_TAG}
+      export CC="gcc-6"
+      export CXX="g++-6"
+      export LINK="g++-6"
+      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/${NODE_DISTTYPE}/ --tag=${NODE_TAG}
     install: |
       mkdir -p \$SNAPCRAFT_PART_INSTALL/etc
       echo "prefix = /usr/local" >> \$SNAPCRAFT_PART_INSTALL/etc/npmrc
