@@ -90,7 +90,9 @@ parts:
     make-parameters:
       - V=
     prepare: |
-      gcc -v
+      export CC="gcc-6"
+      export CXX="g++-6"
+      export LINK="g++-6"
       ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/${NODE_DISTTYPE}/ --tag=${NODE_TAG}
     install: |
       mkdir -p \$SNAPCRAFT_PART_INSTALL/etc
