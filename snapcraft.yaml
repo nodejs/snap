@@ -34,9 +34,12 @@ parts:
     plugin: make
     source-type: tar
     source: https://nodejs.org/download/release/v8.16.2/node-v8.16.2.tar.gz
-    make-parameters: V=
-    override-build: |
-      gcc -v
+    make-parameters:
+      - V=
+    prepare: |
+      export CC="gcc-6"
+      export CXX="g++-6"
+      export LINK="g++-6"
       ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/release/ --tag=
     install: |
       mkdir -p $SNAPCRAFT_PART_INSTALL/etc
