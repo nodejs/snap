@@ -52,4 +52,3 @@ parts:
     # Replacing the spinner with proper stdio appears to fix it.
     install: |
       sed -i "s/var stdio = spinner ? undefined : 'inherit';/var stdio = 'inherit';/" $SNAPCRAFT_PART_INSTALL/lib/cli.js
-
