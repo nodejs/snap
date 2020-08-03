@@ -1,5 +1,5 @@
 name: node
-version: '14.4.0'
+version: '14.7.0'
 summary: Node.js
 description: |
   A JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, npm, is the largest ecosystem of open source libraries in the world. https://nodejs.org/
@@ -20,16 +20,27 @@ apps:
     command: bin/yarn.js
 
 parts:
+  gcc-6:
+    plugin: nil
+    override-pull: 'true'
+    override-build: |
+      sudo apt --yes install software-properties-common
+      sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+      sudo apt update
+      sudo apt --yes install gcc-6 g++-6
+    override-stage: 'true'
+    override-prime: 'true'
   node:
     plugin: make
     source-type: tar
-    source: https://nodejs.org/download/release/v14.4.0/node-v14.4.0.tar.gz
-    build-packages:
-      - g++
-      - make
-      - python2.7
+    source: https://nodejs.org/download/release/v14.7.0/node-v14.7.0.tar.gz
+    make-parameters:
+      - V=
     prepare: |
-      ./configure --prefix=/ --release-urlbase=https://nodejs.org/download/release/ --tag=
+      export CC="gcc-6"
+      export CXX="g++-6"
+      export LINK="g++-6"
+      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/release/ --tag=
     install: |
       mkdir -p $SNAPCRAFT_PART_INSTALL/etc
       echo "prefix = /usr/local" >> $SNAPCRAFT_PART_INSTALL/etc/npmrc
