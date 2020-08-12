@@ -44,8 +44,10 @@ echo "NODE_TAG=$NODE_TAG"
 if [ "X${UPDATE_GIT}" = "Xyes" ]; then
   git clean -fdx
   git reset HEAD --hard
-  git checkout $GIT_BRANCH --force
-  git pull -r origin $GIT_BRANCH
+  git fetch origin
+  git checkout origin/$GIT_BRANCH --force
+  git branch -D $GIT_BRANCH
+  git checkout -b $GIT_BRANCH
 fi
 
 # Write snapcraft.yaml for this config
