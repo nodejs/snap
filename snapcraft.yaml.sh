@@ -117,4 +117,5 @@ if [ "X${UPDATE_GIT}" = "Xyes" ] && [ -n "$(git status --porcelain $__dirname)" 
   echo "Updating git repo and pushing ..."
   git commit $__dirname -m "snap: (auto) updated to ${NODE_VERSION}"
   git push origin $GIT_BRANCH
+	git push launchpad $GIT_BRANCH
 fi
