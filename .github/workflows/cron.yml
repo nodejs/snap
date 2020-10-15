@@ -1,0 +1,37 @@
+name: Snap Cron
+
+on: push
+
+jobs:
+  check:
+    strategy:
+      matrix:
+        track: [14, 12, 10]
+    name: Check branch
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: node${{ matrix.track }}
+          fetch-depth: 0
+
+      - name: Init git config
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email noreply@github.com
+          git remote add launchpad git+ssh://iojs@git.launchpad.net/node-snap
+          mkdir ~/.ssh/
+          chmod 700 ~/.ssh
+          # echo "UserKnownHostsFile ~/.ssh/known_hosts" > ~/.ssh/config
+          echo "Host git.launchpad.net" > ~/.ssh/config
+          echo "  User iojs" >> ~/.ssh/config
+          echo "  IdentityFile ~/.ssh/launchpad_rsa" >> ~/.ssh/config
+          echo -e "${{ secrets.LAUNCHPAD_RSA }}" > ~/.ssh/launchpad_rsa
+          chmod 600 ~/.ssh/launchpad_rsa
+          ssh-keyscan -H git.launchpad.net > ~/.ssh/known_hosts
+
+      - name: Sync
+        run: ./snapcraft.yaml.sh -r${{ matrix.track }} -gnode${{ matrix.track }}
+
