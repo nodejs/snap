@@ -1,12 +1,15 @@
 name: Snap Cron
 
-on: push
+on:
+  push:
+  schedule:
+    - cron:  '*/15 * * * *'
 
 jobs:
   check:
     strategy:
       matrix:
-        track: [14, 12, 10]
+        track: [master, 14, 12, 10]
     name: Check branch
     runs-on: ubuntu-latest
 
@@ -16,6 +19,13 @@ jobs:
         with:
           ref: node${{ matrix.track }}
           fetch-depth: 0
+        if: ${{ matrix.track != 'master' }}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+        if: ${{ matrix.track == 'master' }}
 
       - name: Init git config
         run: |
@@ -24,7 +34,6 @@ jobs:
           git remote add launchpad git+ssh://iojs@git.launchpad.net/node-snap
           mkdir ~/.ssh/
           chmod 700 ~/.ssh
-          # echo "UserKnownHostsFile ~/.ssh/known_hosts" > ~/.ssh/config
           echo "Host git.launchpad.net" > ~/.ssh/config
           echo "  User iojs" >> ~/.ssh/config
           echo "  IdentityFile ~/.ssh/launchpad_rsa" >> ~/.ssh/config
@@ -32,6 +41,10 @@ jobs:
           chmod 600 ~/.ssh/launchpad_rsa
           ssh-keyscan -H git.launchpad.net > ~/.ssh/known_hosts
 
-      - name: Sync
+      - name: Sync Release
         run: ./snapcraft.yaml.sh -r${{ matrix.track }} -gnode${{ matrix.track }}
+        if: ${{ matrix.track != 'master' }}
 
+      - name: Sync Edge
+        run: ./snapcraft.yaml.sh -gmaster
+        if: ${{ matrix.track == 'master' }}
