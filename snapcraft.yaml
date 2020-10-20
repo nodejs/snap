@@ -1,11 +1,12 @@
 name: node
-version: '14.14.0'
+version: '15.0.0'
 summary: Node.js
 description: |
   A JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, npm, is the largest ecosystem of open source libraries in the world. https://nodejs.org/
 
 grade: stable
 confinement: classic
+base: core18
 
 apps:
   node:
@@ -33,7 +34,7 @@ parts:
   node:
     plugin: make
     source-type: tar
-    source: https://nodejs.org/download/release/v14.14.0/node-v14.14.0.tar.gz
+    source: https://nodejs.org/download/release/v15.0.0/node-v15.0.0.tar.gz
     make-parameters:
       - V=
     prepare: |
