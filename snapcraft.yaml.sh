@@ -76,14 +76,14 @@ apps:
     command: bin/yarn.js
 
 parts:
-  gcc-6:
+  gcc-8:
     plugin: nil
     override-pull: 'true'
     override-build: |
       sudo apt --yes install software-properties-common
       sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
       sudo apt update
-      sudo apt --yes install gcc-6 g++-6
+      sudo apt --yes install gcc-8 g++-8 python3-distutils
     override-stage: 'true'
     override-prime: 'true'
   node:
@@ -92,12 +92,13 @@ parts:
     source: https://nodejs.org/download/${NODE_DISTTYPE}/v${NODE_VERSION}/node-v${NODE_VERSION}.tar.gz
     make-parameters:
       - V=
-    prepare: |
-      export CC="gcc-6"
-      export CXX="g++-6"
-      export LINK="g++-6"
+    override-build: |
+      export CC="gcc-8"
+      export CXX="g++-8"
+      export LINK="g++-8"
+      export V=
       ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/${NODE_DISTTYPE}/ --tag=${NODE_TAG}
-    install: |
+      snapcraftctl build
       mkdir -p \$SNAPCRAFT_PART_INSTALL/etc
       echo "prefix = /usr/local" >> \$SNAPCRAFT_PART_INSTALL/etc/npmrc
   yarn:
@@ -106,7 +107,8 @@ parts:
     plugin: dump
     # Yarn has a problem with lifecycle scripts when used inside snap, they don't complete properly, with exit code !=0.
     # Replacing the spinner with proper stdio appears to fix it.
-    install: |
+    override-build: |
+      snapcraftctl build
       sed -i "s/var stdio = spinner ? undefined : 'inherit';/var stdio = 'inherit';/" \$SNAPCRAFT_PART_INSTALL/lib/cli.js
 EOF
 
