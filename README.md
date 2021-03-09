@@ -116,7 +116,7 @@ When release lines stop seeing new releases, they can be removed from [.github/w
 
 ### Default release line
 
-Snaps can have a "default" track. This default determines which track is installed if the user doesn't set one (e.g. with s`sudo snap install node`). It is up to the Snap author to set this default and update it as appropriate. Users don't follow the default track, it only determines the starting track at time of install. Changing default in the Snap store doesn't impact existing users, only new installs
+Snaps can have a "default" track. This default determines which track is installed if the user doesn't set one (e.g. with `sudo snap install node`). It is up to the Snap author to set this default and update it as appropriate. Users don't follow the default track, it only determines the starting track at time of install. Changing default in the Snap store doesn't impact existing users, only new installs
 
 The Node.js Snap should have its "default" set to the most recent LTS. This can be done in the Releases page by a Node.js Snap administrator: https://snapcraft.io/node/releases and should be done as soon as a release line enters **Active LTS** as per the [Release Schedule](https://github.com/nodejs/release#release-schedule).
 
