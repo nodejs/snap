@@ -17,6 +17,7 @@ The Snap managed from this repository is available as `node` from the Snap store
   * [Building Snaps](#building-snaps)
   * [Adding new release lines](#adding-new-release-lines)
     * [Removing old release lines](#removing-old-release-lines)
+  * [Default release line](#default-release-line)
 
 ## Installation
 
@@ -112,3 +113,11 @@ Note that at the time of writing, Snap store authorization for Launchpad has an 
 #### Removing old release lines
 
 When release lines stop seeing new releases, they can be removed from [.github/workflows/cron.yml](./.github/workflows/cron.yml). This stops the entire pipeline from running (although changes to the relevant branch will not even occur without new releases on nodejs.org). The Snap configuration in Launchpad can also be removed but this is not strictly necessary.
+
+### Default release line
+
+Snaps can have a "default" track. This default determines which track is installed if the user doesn't set one (e.g. with `sudo snap install node`). It is up to the Snap author to set this default and update it as appropriate. Users don't follow the default track, it only determines the starting track at time of install. Changing default in the Snap store doesn't impact existing users, only new installs
+
+The Node.js Snap should have its "default" set to the most recent LTS. This can be done in the Releases page by a Node.js Snap administrator: https://snapcraft.io/node/releases and should be done as soon as a release line enters **Active LTS** as per the [Release Schedule](https://github.com/nodejs/release#release-schedule).
+
+This is a manual procedure and may require reminders posted to this repository from the community.
