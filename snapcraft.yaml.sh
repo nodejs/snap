@@ -61,7 +61,7 @@ description: |
 
 grade: stable
 confinement: classic
-base: core18
+base: core20
 
 apps:
   node:
