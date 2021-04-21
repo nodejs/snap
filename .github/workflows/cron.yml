@@ -8,6 +8,7 @@ on:
 jobs:
   check:
     strategy:
+      fail-fast: false
       matrix:
         track: [master, 16, 15, 14, 12, 10]
     name: Check branch
