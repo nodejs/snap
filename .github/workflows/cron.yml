@@ -9,7 +9,7 @@ jobs:
   check:
     strategy:
       matrix:
-        track: [master, 15, 14, 12, 10]
+        track: [master, 16, 15, 14, 12, 10]
     name: Check branch
     runs-on: ubuntu-latest
 
