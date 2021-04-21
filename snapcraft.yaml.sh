@@ -46,7 +46,7 @@ if [ "X${UPDATE_GIT}" = "Xyes" ]; then
   git reset HEAD --hard
   git fetch origin
   git checkout origin/$GIT_BRANCH --force
-  git branch -D $GIT_BRANCH
+  git branch -D $GIT_BRANCH || true
   git checkout -b $GIT_BRANCH
 fi
 
