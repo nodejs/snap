@@ -1,12 +1,12 @@
 name: node
-version: '16.0.0-nightly20210404f562ec64'
+version: '17.0.0-nightly20210910a42bd7e9'
 summary: Node.js
 description: |
   A JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, npm, is the largest ecosystem of open source libraries in the world. https://nodejs.org/
 
 grade: stable
 confinement: classic
-base: core18
+base: core20
 
 apps:
   node:
@@ -34,7 +34,7 @@ parts:
   node:
     plugin: make
     source-type: tar
-    source: https://nodejs.org/download/nightly/v16.0.0-nightly20210404f562ec64e8/node-v16.0.0-nightly20210404f562ec64e8.tar.gz
+    source: https://nodejs.org/download/nightly/v17.0.0-nightly20210910a42bd7e944/node-v17.0.0-nightly20210910a42bd7e944.tar.gz
     make-parameters:
       - V=
     override-build: |
@@ -42,7 +42,7 @@ parts:
       export CXX="g++-8"
       export LINK="g++-8"
       export V=
-      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly20210404f562ec64e8
+      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly20210910a42bd7e944
       snapcraftctl build
       mkdir -p $SNAPCRAFT_PART_INSTALL/etc
       echo "prefix = /usr/local" >> $SNAPCRAFT_PART_INSTALL/etc/npmrc
