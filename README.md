@@ -6,7 +6,7 @@
 
 > app packages for desktop, cloud and IoT that are easy to install, secure, cross‐platform and dependency‐free. Snaps are discoverable and installable from the Snap Store, the app store for Linux with an audience of millions.
 
-The Snap managed from this repository is available as `node` from the Snap store and contains the Node.js runtime, along with the two most widely-used package managers, [npm](https://www.npmjs.com/) and [Yarn](https://yarnpkg.com). They are automatically built and pushed for each supported release line and nightly versions straight from the `master` branch. Once initially installed, new versions of Node.js for the release line you've chosen are automatically updated to your computer within hours of their release on [nodejs.org](https://nodejs.org/).
+The Snap managed from this repository is available as `node` from the Snap store and contains the Node.js runtime, along with the two most widely-used package managers, [npm](https://www.npmjs.com/) and [Yarn](https://yarnpkg.com). They are automatically built and pushed for each supported release line and nightly versions straight from the `main` branch. Once initially installed, new versions of Node.js for the release line you've chosen are automatically updated to your computer within hours of their release on [nodejs.org](https://nodejs.org/).
 
 * [Installation](#installation)
   * [Switching release lines](#switching-release-lines)
@@ -47,7 +47,7 @@ Once switched, snapd will update Node.js for the new channel you have selected.
 
 ### Nightly ("edge") versions
 
-The `master` branch from the Node.js [git repository](https://github.com/nodejs/node) are pushed to the Snap store nightly and are available from the `edge` channel.
+The `main` branch from the Node.js [git repository](https://github.com/nodejs/node) are pushed to the Snap store nightly and are available from the `edge` channel.
 
 ```
 sudo snap install node --classic --channel=edge
@@ -61,15 +61,15 @@ The pipeline from releases to the Snap store is complicated and involves many mo
 
 This repository contains a master script [snapcraft.yaml.sh](./snapcraft.yaml.sh), and a Snap build definition file that it creates, [snapcraft.yaml](./snapcraft.yaml). **snapcraft.yaml should never be edited manually**, it is the product of the script.
 
-This repository contains a branch for each track/channel published to the Snap store. The `master` branch represents the "edge" channel, while the `nodeXX` branches represent the major release lines (e.g. `node14` for Node.js 14.x.x). These release lines are published to the "stable" channel on a track named after the release line. e.g. Node.js 14.x.x releases are published as `14/stable`.
+This repository contains a branch for each track/channel published to the Snap store. The `main` branch represents the "edge" channel, while the `nodeXX` branches represent the major release lines (e.g. `node14` for Node.js 14.x.x). These release lines are published to the "stable" channel on a track named after the release line. e.g. Node.js 14.x.x releases are published as `14/stable`.
 
 Each branch, contains both a snapcraft.yaml.sh script and a snapcraft.yaml definition file. These are different between releases as compile requirements change.
 
-**Changes to the build definition should be made in the snapcraft.yaml.sh script for the relevant branch.** For changes to "edge" (nightly / master) releases, change the snapcraft.yaml.sh script on the `master` branch. For changes to the "14/stable" releases, change the snapcraft.yaml.sh on the `node14` branch. All changes should be made via Pull Request targetting the appropriate branch.
+**Changes to the build definition should be made in the snapcraft.yaml.sh script for the relevant branch.** For changes to "edge" (nightly / main) releases, change the snapcraft.yaml.sh script on the `main` branch. For changes to the "14/stable" releases, change the snapcraft.yaml.sh on the `node14` branch. All changes should be made via Pull Request targetting the appropriate branch.
 
 ### Watching for releases
 
-This repository uses GitHub Actions on a timer (cron) schedule. See [.github/workflows/cron.yml](./.github/workflows/cron.yml). The Action configuration is set to run for the `master` branch and for each major release line that is currently being published to the Snap store using a matrix configuration.
+This repository uses GitHub Actions on a timer (cron) schedule. See [.github/workflows/cron.yml](./.github/workflows/cron.yml). The Action configuration is set to run for the `main` branch and for each major release line that is currently being published to the Snap store using a matrix configuration.
 
 Upon run, for each branch, this repository is cloned and the snapcraft.yaml.sh script is run with arguments that tell it what to do. `-rXX` is supplied to specify the release line (e.g. `-r14`, this is omitted for "edge" releases) and `-gnode14` is supplied to specify the Git branch to operate on (more on this below).
 
@@ -93,7 +93,7 @@ The process for adding new release lines when the Node.js Release team begin one
 
 1. Request a new Track for the "node" Snap in the Snapcraft forum in the ["Store requests" section](https://forum.snapcraft.io/c/store-requests). The track should be the major release line number (e.g. `14`). The "node" Snap has fast-track approval and is usually authorized within 24 hours by the administrators. This step needs to be performed in order to upload to a new track. An example of this for `14` can be seen here: https://forum.snapcraft.io/t/track-request-for-node-14-fast-track-please/16842/3
 2. Create a new branch in this repository, named `nodeXX` where `XX` is the release line number.
-3. Edit [snapcraft.yaml.sh](./snapcraft.yaml.sh) _if_ required for system configuration required to build the new version. In most cases this is not necessary and the `master` version can be copied. Where the compiler minimums change, the equivilant changes may need to be made in the script.
+3. Edit [snapcraft.yaml.sh](./snapcraft.yaml.sh) _if_ required for system configuration required to build the new version. In most cases this is not necessary and the `main` version can be copied. Where the compiler minimums change, the equivilant changes may need to be made in the script.
 4. Edit [.github/workflows/cron.yml](./.github/workflows/cron.yml) to add the new release line to the matrix.
 5. Start a build (manually, or wait for the GitHub Action to trigger by cron), which will update the snapcraft.yaml file for that branch correctly _and_ push the new branch to https://code.launchpad.net/node-snap where it can be further configured.
 6. Navigate to https://code.launchpad.net/node-snap and into the new branch and click on "Create snap package".
