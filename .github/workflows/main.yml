@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: echo branch name
         run: |
-          echo "${{ github_head_ref }}"      
+          echo ${{ github_head_ref }}      
       
       
       
