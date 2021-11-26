@@ -14,6 +14,10 @@ jobs:
 
 
     steps:
+      - name: echo branch name
+        run: |
+          echo "$github_head_ref"      
+      
       
       env:
           RELEASE_TYPE: ${{ GITHUB_HEAD_REF }}
