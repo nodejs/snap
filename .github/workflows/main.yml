@@ -19,5 +19,4 @@ jobs:
           echo "$github_head_ref"      
       
       
-      env:
-          RELEASE_TYPE: ${{ GITHUB_HEAD_REF }}
+      
