@@ -17,8 +17,13 @@ jobs:
     steps:
       - name: echo branch name
         run: |
-          echo ${{ github.head_ref }}
+          # echo ${{ github.head_ref }}
           feature_name=$(echo ${{ github.head_ref }} | cut -d "-" -f 3)
           echo "$feature_name"
       
+      
+      - name: echo etc
+        run: |
+          echo "branch name is ${{ steps.branch.outputs.feature_name }}"
+         
       
