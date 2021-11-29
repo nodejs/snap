@@ -11,7 +11,7 @@ jobs:
       github.event.pull_request.merged == true
     runs-on: ubuntu-20.04
     env:
-      BRANCH_NAME: ${{ github.head.ref }}
+      BRANCH_NAME: ${{ github.head_ref }}
 
 
     steps:
@@ -19,7 +19,7 @@ jobs:
         id: branch
         run: |
           # echo ${{ github.head_ref }}
-          feature_name=$(echo ${{ github.head_ref }} | cut -d "-" -f 3)
+          feature_name=$(echo ${{ env.BRANCH_NAME }} | cut -d "-" -f 3)
           echo "$feature_name"
       
       
