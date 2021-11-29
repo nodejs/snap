@@ -16,6 +16,7 @@ jobs:
 
     steps:
       - name: echo branch name
+        id: branch
         run: |
           # echo ${{ github.head_ref }}
           feature_name=$(echo ${{ github.head_ref }} | cut -d "-" -f 3)
