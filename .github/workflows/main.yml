@@ -18,7 +18,7 @@ jobs:
       - name: echo branch name
         run: |
           echo ${{ github.head_ref }}
-          feature_name=$(echo "${{ env.BRANCH_NAME}}" | cut -d "-" -f 3)
+          feature_name=$(echo "${{ github.head.ref }}" | cut -d "-" -f 3)
           echo "$feature_name"
       
       
