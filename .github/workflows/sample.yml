@@ -10,7 +10,7 @@ jobs:
     env:
       BRANCH_NAME: ${{ github.head_ref }}
       
-   steps:
+    steps:
       - name: echo branch name
         id: branch
         run: |
