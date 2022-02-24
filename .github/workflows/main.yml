@@ -1,14 +1,17 @@
 name: 
 on:
-  pull_request:
-    types: [closed]
+  push:
     branches:
       - master
+  #pull_request:
+  #  types: [closed]
+  #  branches:
+  #    - master
 
 jobs:
   build:
-    if: | 
-      github.event.pull_request.merged == true
+    #if: | 
+      #github.event.pull_request.merged == true
     runs-on: ubuntu-20.04
     env:
       BRANCH_NAME: ${{ github.head_ref }}
@@ -18,10 +21,10 @@ jobs:
       - name: echo branch name
         id: branch
         run: |
-          # echo ${{ github.head_ref }}
-          feature_name=$(echo ${{ env.BRANCH_NAME }} | cut -d "-" -f 3)
-          echo "$feature_name"
-          echo "::set-output name=feature::$feature_name"
+           # echo ${{ github.head_ref }}
+           feature_name=$(echo ${{ env.BRANCH_NAME }} | cut -d "-" -f 3)
+           echo "$feature_name"
+           echo "::set-output name=feature::$feature_name"
       
       
       - name: echo etc
@@ -29,10 +32,11 @@ jobs:
           echo "branch name is ${{ steps.branch.outputs.feature }}"
           
           
-       - name: checkout repo
-         
-         uses: actions/checkout@v2
-         with:
-           ref:  ${{ steps.branch.outputs.feature }}
-         
-      
+       
+      - uses: actions/checkout@v2
+        with:
+          ref:  ${{ steps.branch.outputs.feature }}
+          
+      - name: contents of a file
+        run: |
+          ls -al
