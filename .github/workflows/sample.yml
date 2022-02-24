@@ -1,15 +1,19 @@
 name: 
 on:
   workflow_dispatch:
+    branch_name:
+        description: "Please provide branch name"
+        required: true
+        default: "master"
 
 jobs:
   build:
     runs-on: ubuntu-20.04
     env:
-      BRANCH_NAME: ${{ github.head_ref }}
+      BRANCH_NAME: ${{ github.event.inputs.branch_name }}
       
     steps:
       - name: echo branch name
         id: branch
         run: |
-          echo ${{ github.head_ref }}    
+          echo ${{ env.BRANCH_NAME }}    
