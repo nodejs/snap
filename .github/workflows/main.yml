@@ -27,5 +27,12 @@ jobs:
       - name: echo etc
         run: |
           echo "branch name is ${{ steps.branch.outputs.feature }}"
+          
+          
+       - name: checkout repo
+         
+         uses: actions/checkout@v2
+         with:
+           ref:  ${{ steps.branch.outputs.feature }}
          
       
