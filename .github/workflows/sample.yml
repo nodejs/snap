@@ -4,8 +4,6 @@ on:
 
 jobs:
   build:
-    if: | 
-      github.event.pull_request.merged == true
     runs-on: ubuntu-20.04
     env:
       BRANCH_NAME: ${{ github.head_ref }}
