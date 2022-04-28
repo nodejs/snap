@@ -22,6 +22,10 @@ while getopts "r:g:" opt; do
       echo "Pushing to git $OPTARG" >&2
       UPDATE_GIT=yes
       GIT_BRANCH=$OPTARG
+      REMOTE_BRANCH=$GIT_BRANCH
+      if [ "X${GIT_BRANCH}" = "Xmain" ]; then
+        REMOTE_BRANCH=master
+      fi
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -120,5 +124,5 @@ if [ "X${UPDATE_GIT}" = "Xyes" ] && [ -n "$(git status --porcelain $__dirname)" 
   echo "Updating git repo and pushing ..."
   git commit $__dirname -m "snap: (auto) updated to ${NODE_VERSION}"
   git push origin $GIT_BRANCH
-  git push launchpad $GIT_BRANCH
+  git push launchpad $GIT_BRANCH:$REMOTE_BRANCH
 fi
