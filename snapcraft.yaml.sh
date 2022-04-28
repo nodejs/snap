@@ -109,6 +109,7 @@ parts:
     # Replacing the spinner with proper stdio appears to fix it.
     override-build: |
       snapcraftctl build
+      chmod -R g-s \$SNAPCRAFT_PART_INSTALL
       sed -i "s/var stdio = spinner ? undefined : 'inherit';/var stdio = 'inherit';/" \$SNAPCRAFT_PART_INSTALL/lib/cli.js
 EOF
 
