@@ -40,4 +40,5 @@ parts:
     # Yarn has a problem with lifecycle scripts when used inside snap, they don't complete properly, with exit code !=0.
     # Replacing the spinner with proper stdio appears to fix it.
     install: |
+      chmod -R g-s $SNAPCRAFT_PART_INSTALL
       sed -i "s/var stdio = spinner ? undefined : 'inherit';/var stdio = 'inherit';/" $SNAPCRAFT_PART_INSTALL/lib/cli.js
