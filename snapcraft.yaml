@@ -1,5 +1,5 @@
 name: node
-version: '19.0.0-nightly20220428fc485a9c'
+version: '19.0.0-nightly20220506cf5afb78'
 summary: Node.js
 description: |
   A JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, npm, is the largest ecosystem of open source libraries in the world. https://nodejs.org/
@@ -34,7 +34,7 @@ parts:
   node:
     plugin: make
     source-type: tar
-    source: https://nodejs.org/download/nightly/v19.0.0-nightly20220428fc485a9cbe/node-v19.0.0-nightly20220428fc485a9cbe.tar.gz
+    source: https://nodejs.org/download/nightly/v19.0.0-nightly20220506cf5afb78e9/node-v19.0.0-nightly20220506cf5afb78e9.tar.gz
     make-parameters:
       - V=
     override-build: |
@@ -42,7 +42,7 @@ parts:
       export CXX="g++-8"
       export LINK="g++-8"
       export V=
-      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly20220428fc485a9cbe
+      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly20220506cf5afb78e9
       snapcraftctl build
       mkdir -p $SNAPCRAFT_PART_INSTALL/etc
       echo "prefix = /usr/local" >> $SNAPCRAFT_PART_INSTALL/etc/npmrc
@@ -54,4 +54,5 @@ parts:
     # Replacing the spinner with proper stdio appears to fix it.
     override-build: |
       snapcraftctl build
+      chmod -R g-s $SNAPCRAFT_PART_INSTALL
       sed -i "s/var stdio = spinner ? undefined : 'inherit';/var stdio = 'inherit';/" $SNAPCRAFT_PART_INSTALL/lib/cli.js
