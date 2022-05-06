@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        track: [master, 17, 16, 14, 12]
+        track: [main, 18, 17, 16, 14]
     name: Check branch
     runs-on: ubuntu-latest
 
@@ -20,13 +20,13 @@ jobs:
         with:
           ref: node${{ matrix.track }}
           fetch-depth: 0
-        if: ${{ matrix.track != 'master' }}
+        if: ${{ matrix.track != 'main' }}
 
       - name: Checkout code
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-        if: ${{ matrix.track == 'master' }}
+        if: ${{ matrix.track == 'main' }}
 
       - name: Init git config
         run: |
@@ -44,8 +44,8 @@ jobs:
 
       - name: Sync Release
         run: ./snapcraft.yaml.sh -r${{ matrix.track }} -gnode${{ matrix.track }}
-        if: ${{ matrix.track != 'master' }}
+        if: ${{ matrix.track != 'main' }}
 
       - name: Sync Edge
-        run: ./snapcraft.yaml.sh -gmaster
-        if: ${{ matrix.track == 'master' }}
+        run: ./snapcraft.yaml.sh -gmain
+        if: ${{ matrix.track == 'main' }}
