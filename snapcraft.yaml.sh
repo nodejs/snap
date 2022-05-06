@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -xe
+set -euxo pipefail
 
 __dirname="$(CDPATH= cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STRIP_NPX=no
