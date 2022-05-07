@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -xe
+set -euxo pipefail
 
 __dirname="$(CDPATH= cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STRIP_NPX=no
@@ -10,7 +10,7 @@ while getopts "r:g:" opt; do
     r)
       echo "Updating for latest $OPTARG release" >&2
       # release
-      NODE_VERSION="$(curl -sL https://nodejs.org/download/release/index.tab | awk '/^v'"$OPTARG"'\..*[^a-z0-9]src[^a-z0-9]/ { print substr($1, 2); exit }')"
+      NODE_VERSION="$(curl -sL --show-error --fail https://nodejs.org/download/release/index.tab | awk 'BEGIN { found = 0 } /^v'"$OPTARG"'\..*[^a-z0-9]src[^a-z0-9]/ && !found { found = 1; print substr($1, 2) }')"
       NODE_DISTTYPE="release"
       NODE_TAG=""
       if [ "X${OPTARG}" = "X6" ]; then
@@ -36,7 +36,7 @@ done
 # not a release?
 if [ -z ${NODE_DISTTYPE+x} ]; then
   # nightly
-  NODE_VERSION="$(curl -sL https://nodejs.org/download/nightly/index.tab | awk '/^v[1-9].*[^a-z0-9]src[^a-z0-9]/ { print substr($1, 2); exit }')"
+  NODE_VERSION="$(curl -sL --show-error --fail https://nodejs.org/download/nightly/index.tab | awk 'BEGIN { found = 0 } /^v[1-9].*[^a-z0-9]src[^a-z0-9]/ && !found { found = 1; print substr($1, 2) }')"
   NODE_DISTTYPE="nightly"
   NODE_TAG="$(echo $NODE_VERSION | sed -E 's/^[^-]+-//')"
 fi
