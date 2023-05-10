@@ -80,14 +80,14 @@ apps:
     command: bin/yarn.js
 
 parts:
-  gcc-8:
+  gcc-10:
     plugin: nil
     override-pull: 'true'
     override-build: |
       sudo apt --yes install software-properties-common
       sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
       sudo apt update
-      sudo apt --yes install gcc-8 g++-8 python3-distutils
+      sudo apt --yes install gcc-10 g++-10 python3-distutils
     override-stage: 'true'
     override-prime: 'true'
   node:
@@ -97,9 +97,9 @@ parts:
     make-parameters:
       - V=
     override-build: |
-      export CC="gcc-8"
-      export CXX="g++-8"
-      export LINK="g++-8"
+      export CC="gcc-10"
+      export CXX="g++-10"
+      export LINK="g++-10"
       export V=
       ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/${NODE_DISTTYPE}/ --tag=${NODE_TAG}
       snapcraftctl build
