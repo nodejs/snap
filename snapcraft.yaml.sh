@@ -2,7 +2,7 @@
 
 set -euxo pipefail
 
-__dirname="$(CDPATH= cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+__dirname="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 while getopts "r:g:" opt; do
   case $opt in
@@ -33,7 +33,7 @@ if [ -z ${NODE_DISTTYPE+x} ]; then
   # nightly
   NODE_VERSION="$(curl -sL --show-error --fail https://nodejs.org/download/nightly/index.tab | awk 'BEGIN { found = 0 } /^v[1-9].*[^a-z0-9]src[^a-z0-9]/ && !found { found = 1; print substr($1, 2) }')"
   NODE_DISTTYPE="nightly"
-  NODE_TAG="$(echo $NODE_VERSION | sed -E 's/^[^-]+-//')"
+  NODE_TAG="$(echo "$NODE_VERSION" | sed -E 's/^[^-]+-//')"
 fi
 
 echo "NODE_VERSION=$NODE_VERSION"
@@ -44,14 +44,14 @@ if [ "X${UPDATE_GIT}" = "Xyes" ]; then
   git clean -fdx
   git reset HEAD --hard
   git fetch origin
-  git checkout origin/$GIT_BRANCH --force
-  git branch -D $GIT_BRANCH || true
-  git checkout -b $GIT_BRANCH
+  git checkout "origin/$GIT_BRANCH" --force
+  git branch -D "$GIT_BRANCH" || true
+  git checkout -b "$GIT_BRANCH"
 fi
 
 # Write snapcraft.yaml for this config
 
-cat > ${__dirname}/snapcraft.yaml << EOF
+cat > "${__dirname}/snapcraft.yaml" << EOF
 name: node
 version: '${NODE_VERSION:0:30}'
 summary: Node.js
@@ -111,9 +111,9 @@ parts:
       sed -i "s/var stdio = spinner ? undefined : 'inherit';/var stdio = 'inherit';/" \$SNAPCRAFT_PART_INSTALL/lib/cli.js
 EOF
 
-if [ "X${UPDATE_GIT}" = "Xyes" ] && [ -n "$(git status --porcelain $__dirname)" ]; then
+if [ "X${UPDATE_GIT}" = "Xyes" ] && [ -n "$(git status --porcelain "$__dirname")" ]; then
   echo "Updating git repo and pushing ..."
-  git commit $__dirname -m "snap: (auto) updated to ${NODE_VERSION}"
-  git push origin $GIT_BRANCH
-  git push launchpad $GIT_BRANCH:$REMOTE_BRANCH
+  git commit "$__dirname" -m "snap: (auto) updated to ${NODE_VERSION}"
+  git push origin "$GIT_BRANCH"
+  git push launchpad "$GIT_BRANCH:$REMOTE_BRANCH"
 fi
