@@ -40,7 +40,10 @@ jobs:
           echo "  IdentityFile ~/.ssh/launchpad_rsa" >> ~/.ssh/config
           echo -e "${{ secrets.LAUNCHPAD_RSA }}" > ~/.ssh/launchpad_rsa
           chmod 600 ~/.ssh/launchpad_rsa
-          ssh-keyscan -H git.launchpad.net > ~/.ssh/known_hosts
+          # In ephemeral environments like GitHub Action runners, relying on TOFU isn't providing any security
+          # so require the key obtained by `ssh-keyscan` to match the expected hash from https://help.launchpad.net/SSHFingerprints
+          ssh-keyscan git.launchpad.net >> ~/.ssh/known_hosts
+          ssh-keygen -qlF git.launchpad.net | grep -xF 'git.launchpad.net RSA SHA256:UNOzlP66WpDuEo34Wgs8mewypV0UzqHLsIFoqwe8dYo'
 
       - name: Sync Release
         run: ./snapcraft.yaml.sh -r${{ matrix.track }} -gnode${{ matrix.track }}
