@@ -86,7 +86,6 @@ parts:
     override-build: |
       sudo apt --yes install software-properties-common
       sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
-      sudo apt update
       sudo apt --yes install gcc-10 g++-10 python3-distutils
     override-stage: 'true'
     override-prime: 'true'
