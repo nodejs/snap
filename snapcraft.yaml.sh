@@ -74,31 +74,31 @@ apps:
   yarnpkg:
     command: bin/yarn.js
 
+package-repositories:
+  - type: apt
+    ppa: ubuntu-toolchain-r/test
+
 parts:
-  gcc-10:
-    plugin: nil
-    override-pull: 'true'
-    override-build: |
-      sudo apt --yes install software-properties-common
-      sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
-      sudo apt --yes install gcc-10 g++-10 python3-distutils
-    override-stage: 'true'
-    override-prime: 'true'
   node:
     plugin: make
     source-type: tar
     source: https://nodejs.org/download/${NODE_DISTTYPE}/v${NODE_VERSION}/node-v${NODE_VERSION}.tar.gz
+    build-packages:
+      - gcc-10
+      - g++-10
+      - python3-distutils
+    build-environment:
+      - CC: gcc-10
+      - CXX: g++-10
+      - LINK: g++-10
+      - V: ""
     make-parameters:
       - V=
     override-build: |
-      export CC="gcc-10"
-      export CXX="g++-10"
-      export LINK="g++-10"
-      export V=
       ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/${NODE_DISTTYPE}/ --tag=${NODE_TAG}
-      snapcraftctl build
-      mkdir -p \$SNAPCRAFT_PART_INSTALL/etc
-      echo "prefix = /usr/local" >> \$SNAPCRAFT_PART_INSTALL/etc/npmrc
+      craftctl default
+      mkdir -p \$CRAFT_PART_INSTALL/etc
+      echo "prefix = /usr/local" >> \$CRAFT_PART_INSTALL/etc/npmrc
   yarn:
     source-type: tar
     source: https://yarnpkg.com/latest.tar.gz
@@ -106,8 +106,8 @@ parts:
     # Yarn has a problem with lifecycle scripts when used inside snap, they don't complete properly, with exit code !=0.
     # Replacing the spinner with proper stdio appears to fix it.
     override-build: |
-      snapcraftctl build
-      chmod -R g-s \$SNAPCRAFT_PART_INSTALL
+      craftctl default
+      chmod -R g-s \$CRAFT_PART_INSTALL
       sed -i "s/var stdio = spinner ? undefined : 'inherit';/var stdio = 'inherit';/" \$SNAPCRAFT_PART_INSTALL/lib/cli.js
 EOF
 
