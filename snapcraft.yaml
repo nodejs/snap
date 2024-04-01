@@ -1,5 +1,5 @@
 name: node
-version: '22.0.0-nightly2024032929de7f82'
+version: '22.0.0-nightly202404019efc84a2'
 summary: Node.js
 description: |
   A JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, npm, is the largest ecosystem of open source libraries in the world. https://nodejs.org/
@@ -28,7 +28,7 @@ parts:
   node:
     plugin: make
     source-type: tar
-    source: https://nodejs.org/download/nightly/v22.0.0-nightly2024032929de7f82cd/node-v22.0.0-nightly2024032929de7f82cd.tar.gz
+    source: https://nodejs.org/download/nightly/v22.0.0-nightly202404019efc84a2cb/node-v22.0.0-nightly202404019efc84a2cb.tar.gz
     build-packages:
       - gcc-10
       - g++-10
@@ -41,7 +41,7 @@ parts:
     make-parameters:
       - V=
     override-build: |
-      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly2024032929de7f82cd
+      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly202404019efc84a2cb
       craftctl default
       mkdir -p $CRAFT_PART_INSTALL/etc
       echo "prefix = /usr/local" >> $CRAFT_PART_INSTALL/etc/npmrc

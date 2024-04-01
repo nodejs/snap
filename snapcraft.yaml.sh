@@ -108,7 +108,7 @@ parts:
     override-build: |
       craftctl default
       chmod -R g-s \$CRAFT_PART_INSTALL
-      sed -i "s/var stdio = spinner ? undefined : 'inherit';/var stdio = 'inherit';/" \$SNAPCRAFT_PART_INSTALL/lib/cli.js
+      sed -i "s/var stdio = spinner ? undefined : 'inherit';/var stdio = 'inherit';/" \$CRAFT_PART_INSTALL/lib/cli.js
 EOF
 
 if [ "X${UPDATE_GIT}" = "Xyes" ] && [ -n "$(git status --porcelain "$__dirname")" ]; then
