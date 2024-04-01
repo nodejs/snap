@@ -74,10 +74,6 @@ apps:
   yarnpkg:
     command: bin/yarn.js
 
-package-repositories:
-  - type: apt
-    ppa: ubuntu-toolchain-r/test
-
 parts:
   node:
     plugin: make
