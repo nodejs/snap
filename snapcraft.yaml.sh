@@ -84,6 +84,8 @@ parts:
     source-type: tar
     source: https://nodejs.org/download/${NODE_DISTTYPE}/v${NODE_VERSION}/node-v${NODE_VERSION}.tar.gz
     build-packages:
+      # Ensure these and the build environment below match the minimum GCC and G++ versions for this Node release.
+      # https://github.com/nodejs/node/blob/main/BUILDING.md#building-nodejs-on-supported-platforms
       - gcc-10
       - g++-10
       - python3-distutils
