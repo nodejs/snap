@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        track: [main, 21, 20, 18]
+        track: [main, 22, 21, 20, 18]
     name: Check branch
     runs-on: ubuntu-latest
 
