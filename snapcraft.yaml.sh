@@ -3,6 +3,7 @@
 set -euxo pipefail
 
 __dirname="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+UPDATE_GIT=no
 
 while getopts "r:g:" opt; do
   case $opt in
