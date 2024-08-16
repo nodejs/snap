@@ -1,5 +1,8 @@
 name: Snap Cron
 
+permissions:
+  contents: write
+
 on:
   push:
   schedule:
