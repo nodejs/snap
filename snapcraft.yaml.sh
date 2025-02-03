@@ -83,13 +83,13 @@ parts:
     build-packages:
       # Ensure these and the build environment below match the minimum GCC and G++ versions for this Node release.
       # https://github.com/nodejs/node/blob/main/BUILDING.md#building-nodejs-on-supported-platforms
-      - gcc-10
-      - g++-10
+      - gcc-12
+      - g++-12
       - python3-distutils
     build-environment:
-      - CC: gcc-10
-      - CXX: g++-10
-      - LINK: g++-10
+      - CC: gcc-12
+      - CXX: g++-12
+      - LINK: g++-12
       - V: ""
     make-parameters:
       - V=
