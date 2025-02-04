@@ -99,7 +99,7 @@ The process for adding new release lines when the Node.js Release team begin one
 6. Navigate to https://code.launchpad.net/node-snap and into the new branch and click on "Create snap package".
   - The "name" should be the same as the branch
   - The "series" should be inferred from snapcraft.yaml
-  - The "processors" should be _at least_: armhf, arm64, amd64, i386
+  - The "processors" should be _at least_: armhf, arm64, amd64, i386, ppc64el, s390x
   - "Automatically build when branch changes" should be ticked.
   - "Automatically upload to store" should be ticked
   - "Registered store package name" should be "node"
