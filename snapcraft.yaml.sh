@@ -85,7 +85,6 @@ parts:
       # https://github.com/nodejs/node/blob/main/BUILDING.md#building-nodejs-on-supported-platforms
       - gcc-14
       - g++-14
-      - python3-distutils
     build-environment:
       - CC: gcc-14
       - CXX: g++-14
