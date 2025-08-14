@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        track: [main, 23, 22, 20, 18]
+        track: [main, 24, 22, 20]
     name: Check branch
     runs-on: ubuntu-latest
 
