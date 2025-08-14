@@ -6,7 +6,7 @@ description: |
 
 grade: stable
 confinement: classic
-base: core22
+base: core24
 
 apps:
   node:
@@ -28,13 +28,13 @@ parts:
     build-packages:
       # Ensure these and the build environment below match the minimum GCC and G++ versions for this Node release.
       # https://github.com/nodejs/node/blob/main/BUILDING.md#building-nodejs-on-supported-platforms
-      - gcc-12
-      - g++-12
+      - gcc-14
+      - g++-14
       - python3-distutils
     build-environment:
-      - CC: gcc-12
-      - CXX: g++-12
-      - LINK: g++-12
+      - CC: gcc-14
+      - CXX: g++-14
+      - LINK: g++-14
       - V: ""
     make-parameters:
       - V=
