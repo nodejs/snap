@@ -91,6 +91,8 @@ parts:
       - CXX: g++-10
       - LINK: g++-10
       - V: ""
+    stage-packages:
+      - libstdc++6
     make-parameters:
       - V=
     override-build: |
