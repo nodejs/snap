@@ -41,7 +41,7 @@ parts:
       - V: ""
     make-parameters:
       - V=
-      - LDFLAGS=-Wl,-dynamic-linker=/snap/core24/current/lib64/ld-linux-x86-64.so.2 -Wl,-rpath=/snap/node/current/lib/x86_64-linux-gnu:/snap/node/current/usr/lib/x86_64-linux-gnu:/snap/core24/current/lib/x86_64-linux-gnu:/snap/core24/current/usr/lib/x86_64-linux-gnu
+      - LDFLAGS=-Wl,-rpath=/snap/node/current/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/node/current/usr/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/core24/current/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/core24/current/usr/lib/$(SNAPCRAFT_ARCH_TRIPLET)
     override-build: |
       ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/release/ --tag=
       craftctl default
