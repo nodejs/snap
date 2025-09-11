@@ -99,7 +99,7 @@ parts:
       - libstdc++6
     make-parameters:
       - V=
-      - LDFLAGS=-Wl,-dynamic-linker=/snap/core22/current/lib64/ld-linux-x86-64.so.2 -Wl,-rpath=\$ORIGIN/../lib/x86_64-linux-gnu:\$ORIGIN/../usr/lib/x86_64-linux-gnu:/snap/core22/current/lib/x86_64-linux-gnu:/snap/core22/current/usr/lib/x86_64-linux-gnu
+      - LDFLAGS=-Wl,-dynamic-linker=/snap/core22/current/lib64/ld-linux-x86-64.so.2 -Wl,-rpath=\\\$\$ORIGIN/../lib/x86_64-linux-gnu:\\\$\$ORIGIN/../usr/lib/x86_64-linux-gnu:/snap/core22/current/lib/x86_64-linux-gnu:/snap/core22/current/usr/lib/x86_64-linux-gnu
     override-build: |
       ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/${NODE_DISTTYPE}/ --tag=${NODE_TAG}
       craftctl default
