@@ -40,8 +40,6 @@ parts:
       - CXX: g++-10
       - LINK: g++-10
       - V: ""
-    stage-packages:
-      - libstdc++6
     make-parameters:
       - V=
       - LDFLAGS=-Wl,-rpath=/snap/node/current/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/node/current/usr/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/core22/current/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/core22/current/usr/lib/$(SNAPCRAFT_ARCH_TRIPLET)
