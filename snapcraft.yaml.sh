@@ -80,6 +80,8 @@ parts:
     plugin: make
     source-type: tar
     source: https://nodejs.org/download/${NODE_DISTTYPE}/v${NODE_VERSION}/node-v${NODE_VERSION}.tar.gz
+    build-snaps:
+      - rustup/latest/stable
     build-packages:
       # Ensure these and the build environment below match the minimum GCC and G++ versions for this Node release.
       # https://github.com/nodejs/node/blob/main/BUILDING.md#building-nodejs-on-supported-platforms
@@ -93,12 +95,14 @@ parts:
       - CC: gcc-14
       - CXX: g++-14
       - LINK: g++-14
+      - RUSTUP_TOOLCHAIN: "1.83.0"
       - V: ""
     make-parameters:
       - V=
       - LDFLAGS=-Wl,-rpath=/snap/node/current/lib/\$(SNAPCRAFT_ARCH_TRIPLET):/snap/node/current/usr/lib/\$(SNAPCRAFT_ARCH_TRIPLET):/snap/core24/current/lib/\$(SNAPCRAFT_ARCH_TRIPLET):/snap/core24/current/usr/lib/\$(SNAPCRAFT_ARCH_TRIPLET)
     override-build: |
-      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/${NODE_DISTTYPE}/ --tag=${NODE_TAG}
+      rustup toolchain install "\$RUSTUP_TOOLCHAIN" --profile minimal
+      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/${NODE_DISTTYPE}/ --tag=${NODE_TAG} --v8-enable-temporal-support
       craftctl default
       mkdir -p \$CRAFT_PART_INSTALL/etc
       echo "prefix = /usr/local" >> \$CRAFT_PART_INSTALL/etc/npmrc
