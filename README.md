@@ -6,7 +6,7 @@
 
 > app packages for desktop, cloud and IoT that are easy to install, secure, cross‐platform and dependency‐free. Snaps are discoverable and installable from the Snap Store, the app store for Linux with an audience of millions.
 
-The Snap managed from this repository is available as `node` from the Snap store and contains the Node.js runtime, along with the two most widely-used package managers, [npm](https://www.npmjs.com/) and [Yarn](https://yarnpkg.com). They are automatically built and pushed for each supported release line and nightly versions straight from the `main` branch. Once initially installed, new versions of Node.js for the release line you've chosen are automatically updated to your computer within hours of their release on [nodejs.org](https://nodejs.org/).
+The Snap managed from this repository is available as `node` from the Snap store and contains the Node.js runtime and [npm](https://www.npmjs.com/). Tracks before Node.js 26 also include [Yarn Classic](https://classic.yarnpkg.com/). They are automatically built and pushed for each supported release line and nightly versions straight from the `main` branch. Once initially installed, new versions of Node.js for the release line you've chosen are automatically updated to your computer within hours of their release on [nodejs.org](https://nodejs.org/).
 
 * [Installation](#installation)
   * [Switching release lines](#switching-release-lines)
@@ -31,7 +31,7 @@ sudo snap install node --classic --channel=14
 
 Substituting `14` for the major version you want to install. Both LTS and Current versions of Node.js are available.
 
-Once installed, the `node`, `npm` and `yarn` commands are available for use and will remain updated for the channel you selected.
+Once installed, the `node` and `npm` commands are available for use. Tracks before Node.js 26 also provide `yarn`. All commands remain updated for the channel you selected.
 
 The `--classic` argument is required here as Node.js needs full access to your system in order to be useful, therefore it needs Snap's "classic confinement". By default, Snaps are much more restricted in their ability to access your disk and network and must request special access from you where they need it.
 
