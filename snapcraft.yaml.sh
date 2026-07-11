@@ -217,6 +217,7 @@ parts:
 
   node-experimental:
     plugin: make
+    source: .
     build-attributes:
       - enable-patchelf
     build-snaps:
