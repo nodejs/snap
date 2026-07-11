@@ -15,10 +15,6 @@ apps:
     command: bin/npm
   npx:
     command: bin/npx
-  yarn:
-    command: bin/yarn.js
-  yarnpkg:
-    command: bin/yarn.js
 
 parts:
   node:
@@ -51,13 +47,3 @@ parts:
       craftctl default
       mkdir -p $CRAFT_PART_INSTALL/etc
       echo "prefix = /usr/local" >> $CRAFT_PART_INSTALL/etc/npmrc
-  yarn:
-    source-type: tar
-    source: https://yarnpkg.com/latest.tar.gz
-    plugin: dump
-    # Yarn has a problem with lifecycle scripts when used inside snap, they don't complete properly, with exit code !=0.
-    # Replacing the spinner with proper stdio appears to fix it.
-    override-build: |
-      craftctl default
-      chmod -R g-s $CRAFT_PART_INSTALL
-      sed -i "s/var stdio = spinner ? undefined : 'inherit';/var stdio = 'inherit';/" $CRAFT_PART_INSTALL/lib/cli.js
