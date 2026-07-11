@@ -51,6 +51,8 @@ parts:
     source-type: tar
     source: https://yarnpkg.com/latest.tar.gz
     plugin: dump
+    prime:
+      - "-package.json"
     # Yarn has a problem with lifecycle scripts when used inside snap, they don't complete properly, with exit code !=0.
     # Replacing the spinner with proper stdio appears to fix it.
     override-build: |
