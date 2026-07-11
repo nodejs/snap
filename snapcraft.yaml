@@ -8,6 +8,10 @@ grade: stable
 confinement: classic
 base: core24
 
+environment:
+  PATH: '$SNAP/bin:$PATH'
+  LD_LIBRARY_PATH: '$SNAP/lib/runtime'
+
 apps:
   node:
     command: bin/node
@@ -17,21 +21,80 @@ apps:
     command: bin/npx
 
 parts:
-  node:
-    plugin: make
-    source-type: tar
-    source: https://nodejs.org/download/release/v26.5.0/node-v26.5.0.tar.gz
-    build-snaps:
-      - rustup/latest/stable
+  node-prebuilt:
+    plugin: nil
+    build-attributes:
+      - no-patchelf
     build-packages:
-      # Ensure these and the build environment below match the minimum GCC and G++ versions for this Node release.
-      # https://github.com/nodejs/node/blob/main/BUILDING.md#building-nodejs-on-supported-platforms
-      - gcc-14
-      - g++-14
+      - curl
+      - xz-utils
+    override-pull: |
+      case "$CRAFT_ARCH_BUILD_FOR" in
+        amd64)
+          archive="node-v26.5.0-linux-x64.tar.xz"
+          checksum="9f619528f1db5ddc41dccf54211066fb42228d69a156733c69cb9d6cc92e358c"
+          ;;
+        arm64)
+          archive="node-v26.5.0-linux-arm64.tar.xz"
+          checksum="036df0b49662ebb350eb56f1cac603699b1e9ed1e2603ee129fefda473479030"
+          ;;
+        s390x)
+          archive="node-v26.5.0-linux-s390x.tar.xz"
+          checksum="cb6c7942a0ef6ac6275d39aba2de2cf58c6037e5529d065cf4ec834500746802"
+          ;;
+        armhf)
+          if [ "source" != "prebuilt" ]; then
+            exit 0
+          fi
+          archive=""
+          checksum=""
+          ;;
+        *)
+          echo "Unsupported architecture: $CRAFT_ARCH_BUILD_FOR" >&2
+          exit 1
+          ;;
+      esac
+      cd "$CRAFT_PART_SRC"
+      curl -sSL --show-error --fail --proto '=https' --tlsv1.2         --output "$archive" "https://nodejs.org/download/release/v26.5.0/$archive"
+      echo "$checksum  $archive" | sha256sum --check --strict -
+      tar -xJf "$archive" --strip-components=1
+      rm "$archive"
+    override-build: |
+      if [ "$CRAFT_ARCH_BUILD_FOR" = "armhf" ] && [ "source" != "prebuilt" ]; then
+        exit 0
+      fi
+      craftctl default
+      cp -a "$CRAFT_PART_SRC"/. "$CRAFT_PART_INSTALL"/
+      mkdir -p "$CRAFT_PART_INSTALL/etc"
+      echo "prefix = /usr/local" >> "$CRAFT_PART_INSTALL/etc/npmrc"
+
+  node-libatomic:
+    plugin: nil
+    build-attributes:
+      - no-patchelf
+    build-packages:
+      - libatomic1
+    override-build: |
+      craftctl default
+      install -Dm644         "/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libatomic.so.1"         "$CRAFT_PART_INSTALL/lib/runtime/libatomic.so.1"
+
+  node-experimental:
+    plugin: make
+    build-attributes:
+      - enable-patchelf
+    build-snaps:
+      - to armhf:
+          - rustup/latest/stable
+    build-packages:
+      - curl
+      - xz-utils
+      - to armhf:
+          - gcc-14
+          - g++-14
     stage-packages:
-      # Include C++ runtime libraries that Node.js needs
-      - libstdc++6
-      - libgcc-s1
+      - to armhf:
+          - libstdc++6
+          - libgcc-s1
     build-environment:
       - CC: gcc-14
       - CXX: g++-14
@@ -40,10 +103,22 @@ parts:
       - V: ""
     make-parameters:
       - V=
-      - LDFLAGS=-Wl,-rpath=/snap/node/current/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/node/current/usr/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/core24/current/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/core24/current/usr/lib/$(SNAPCRAFT_ARCH_TRIPLET)
+    override-pull: |
+      if [ "source" != "source" ] || [ "$CRAFT_ARCH_BUILD_FOR" != "armhf" ]; then
+        exit 0
+      fi
+      cd "$CRAFT_PART_SRC"
+      archive="node-v26.5.0.tar.xz"
+      curl -sSL --show-error --fail --proto '=https' --tlsv1.2         --output "$archive" "https://nodejs.org/download/release/v26.5.0/$archive"
+      echo "0e179470097e247a0c0769b77cc1359fc3e1baf0686df89bafe1fb48cb1887f4  $archive" | sha256sum --check --strict -
+      tar -xJf "$archive" --strip-components=1
+      rm "$archive"
     override-build: |
+      if [ "source" != "source" ] || [ "$CRAFT_ARCH_BUILD_FOR" != "armhf" ]; then
+        exit 0
+      fi
       rustup toolchain install "$RUSTUP_TOOLCHAIN" --profile minimal
       ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/release/ --tag= --v8-enable-temporal-support
       craftctl default
-      mkdir -p $CRAFT_PART_INSTALL/etc
-      echo "prefix = /usr/local" >> $CRAFT_PART_INSTALL/etc/npmrc
+      mkdir -p "$CRAFT_PART_INSTALL/etc"
+      echo "prefix = /usr/local" >> "$CRAFT_PART_INSTALL/etc/npmrc"
