@@ -15,14 +15,16 @@ apps:
     command: bin/npm
   npx:
     command: bin/npx
+  yarn:
+    command: bin/yarn.js
+  yarnpkg:
+    command: bin/yarn.js
 
 parts:
   node:
     plugin: make
     source-type: tar
     source: https://nodejs.org/download/nightly/v27.0.0-nightly202607108fec65d877/node-v27.0.0-nightly202607108fec65d877.tar.gz
-    build-snaps:
-      - rustup/latest/stable
     build-packages:
       # Ensure these and the build environment below match the minimum GCC and G++ versions for this Node release.
       # https://github.com/nodejs/node/blob/main/BUILDING.md#building-nodejs-on-supported-platforms
@@ -36,14 +38,24 @@ parts:
       - CC: gcc-14
       - CXX: g++-14
       - LINK: g++-14
-      - RUSTUP_TOOLCHAIN: "1.83.0"
       - V: ""
     make-parameters:
       - V=
       - LDFLAGS=-Wl,-rpath=/snap/node/current/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/node/current/usr/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/core24/current/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/core24/current/usr/lib/$(SNAPCRAFT_ARCH_TRIPLET)
     override-build: |
-      rustup toolchain install "$RUSTUP_TOOLCHAIN" --profile minimal
-      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly202607108fec65d877 --v8-enable-temporal-support
+      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly202607108fec65d877
       craftctl default
       mkdir -p $CRAFT_PART_INSTALL/etc
       echo "prefix = /usr/local" >> $CRAFT_PART_INSTALL/etc/npmrc
+  yarn:
+    source-type: tar
+    source: https://yarnpkg.com/latest.tar.gz
+    plugin: dump
+    prime:
+      - "-package.json"
+    # Yarn has a problem with lifecycle scripts when used inside snap, they don't complete properly, with exit code !=0.
+    # Replacing the spinner with proper stdio appears to fix it.
+    override-build: |
+      craftctl default
+      chmod -R g-s $CRAFT_PART_INSTALL
+      sed -i "s/var stdio = spinner ? undefined : 'inherit';/var stdio = 'inherit';/" $CRAFT_PART_INSTALL/lib/cli.js
