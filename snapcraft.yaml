@@ -1,5 +1,5 @@
 name: node
-version: '27.0.0-nightly202607116eff6797'
+version: '27.0.0-nightly2026071214166a59'
 summary: Node.js
 description: |
   A JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, npm, is the largest ecosystem of open source libraries in the world. https://nodejs.org/
@@ -20,7 +20,7 @@ parts:
   node:
     plugin: make
     source-type: tar
-    source: https://nodejs.org/download/nightly/v27.0.0-nightly202607116eff6797be/node-v27.0.0-nightly202607116eff6797be.tar.gz
+    source: https://nodejs.org/download/nightly/v27.0.0-nightly2026071214166a59cc/node-v27.0.0-nightly2026071214166a59cc.tar.gz
     build-snaps:
       - rustup/latest/stable
     build-packages:
@@ -43,7 +43,7 @@ parts:
       - LDFLAGS=-Wl,-rpath=/snap/node/current/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/node/current/usr/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/core24/current/lib/$(SNAPCRAFT_ARCH_TRIPLET):/snap/core24/current/usr/lib/$(SNAPCRAFT_ARCH_TRIPLET)
     override-build: |
       rustup toolchain install "$RUSTUP_TOOLCHAIN" --profile minimal
-      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly202607116eff6797be --v8-enable-temporal-support
+      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly2026071214166a59cc --v8-enable-temporal-support
       craftctl default
       mkdir -p $CRAFT_PART_INSTALL/etc
       echo "prefix = /usr/local" >> $CRAFT_PART_INSTALL/etc/npmrc
