@@ -5,32 +5,39 @@ permissions:
 
 on:
   workflow_dispatch:
-  push:
   schedule:
-    - cron:  '0 * * * *'
+    - cron: '0 * * * *'
 
 jobs:
   check:
+    name: Check ${{ matrix.branch }}
+    runs-on: ubuntu-latest
+    concurrency:
+      group: snap-sync-${{ matrix.branch }}
+      cancel-in-progress: false
     strategy:
       fail-fast: false
       matrix:
-        track: [main, 26, 24, 22]
-    name: Check branch
-    runs-on: ubuntu-latest
+        include:
+          - branch: main
+            launchpad_branch: master
+            release: ''
+          - branch: node26
+            launchpad_branch: node26
+            release: '26'
+          - branch: node24
+            launchpad_branch: node24
+            release: '24'
+          - branch: node22
+            launchpad_branch: node22
+            release: '22'
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
         with:
-          ref: node${{ matrix.track }}
+          ref: ${{ matrix.branch }}
           fetch-depth: 0
-        if: ${{ matrix.track != 'main' }}
-
-      - name: Checkout code
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-        if: ${{ matrix.track == 'main' }}
 
       - name: Init git config
         run: |
@@ -49,10 +56,30 @@ jobs:
           ssh-keyscan git.launchpad.net >> ~/.ssh/known_hosts
           ssh-keygen -qlF git.launchpad.net | grep -xF 'git.launchpad.net RSA SHA256:UNOzlP66WpDuEo34Wgs8mewypV0UzqHLsIFoqwe8dYo'
 
-      - name: Sync Release
-        run: ./snapcraft.yaml.sh -r${{ matrix.track }} -gnode${{ matrix.track }}
-        if: ${{ matrix.track != 'main' }}
+      - name: Generate Snap definition
+        id: generate
+        env:
+          RELEASE: ${{ matrix.release }}
+        run: |
+          args=()
+          if [[ -n "$RELEASE" ]]; then
+            args=(-r "$RELEASE")
+          fi
+          output="$(./snapcraft.yaml.sh "${args[@]}")"
+          printf '%s\n' "$output"
+          version="$(printf '%s\n' "$output" | awk -F= '$1 == "NODE_VERSION" { print $2 }')"
+          test -n "$version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
-      - name: Sync Edge
-        run: ./snapcraft.yaml.sh -gmain
-        if: ${{ matrix.track == 'main' }}
+      - name: Publish changes
+        env:
+          BRANCH: ${{ matrix.branch }}
+          LAUNCHPAD_BRANCH: ${{ matrix.launchpad_branch }}
+          VERSION: ${{ steps.generate.outputs.version }}
+        run: |
+          if ! git diff --quiet -- snapcraft.yaml; then
+            git add snapcraft.yaml
+            git commit -m "snap: (auto) updated to $VERSION"
+            git push origin "HEAD:$BRANCH"
+          fi
+          git push launchpad "HEAD:$LAUNCHPAD_BRANCH"
