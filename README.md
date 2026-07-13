@@ -63,21 +63,27 @@ This repository contains a main script [snapcraft.yaml.sh](./snapcraft.yaml.sh),
 
 This repository contains a branch for each track/channel published to the Snap store. The `main` branch represents the "edge" channel, while the `nodeXX` branches represent the major release lines (e.g. `node14` for Node.js 14.x.x). These release lines are published to the "stable" channel on a track named after the release line. e.g. Node.js 14.x.x releases are published as `14/stable`.
 
-Each branch, contains both a snapcraft.yaml.sh script and a snapcraft.yaml definition file. These are different between releases as compile requirements change.
+Each branch contains its own snapcraft.yaml.sh script and generated snapcraft.yaml definition. These may differ as release artifact availability and source-build requirements change.
 
 **Changes to the build definition should be made in the snapcraft.yaml.sh script for the relevant branch.** For changes to "edge" (nightly / main) releases, change the snapcraft.yaml.sh script on the `main` branch. For changes to the "14/stable" releases, change the snapcraft.yaml.sh on the `node14` branch. All changes should be made via Pull Request targeting the appropriate branch.
 
 ### Watching for releases
 
-This repository uses GitHub Actions on a timer (cron) schedule. See [.github/workflows/cron.yml](./.github/workflows/cron.yml). The Action configuration is set to run for the `main` branch and for each major release line that is currently being published to the Snap store using a matrix configuration.
+This repository uses an hourly or manually dispatched GitHub Actions workflow. See [.github/workflows/cron.yml](./.github/workflows/cron.yml). Its matrix contains `main` and each major release line currently published to the Snap store. Jobs for the same branch are serialized.
 
-Upon run, for each branch, this repository is cloned and the snapcraft.yaml.sh script is run with arguments that tell it what to do. `-rXX` is supplied to specify the release line (e.g. `-r14`, this is omitted for "edge" releases) and `-gnode14` is supplied to specify the Git branch to operate on (more on this below).
+For each branch, the workflow checks out its current tip and runs snapcraft.yaml.sh. `-rXX` selects a release line (for example, `-r24`); the option is omitted for edge releases.
 
-The snapcraft.yaml.sh script will fetch the relevant releases list, either https://nodejs.org/download/release/index.tab for regular releases, or https://nodejs.org/download/nightly/index.tab for "edge" releases. The latest release for the given release line (or latest nightly release) is then used to build the snapcraft.yaml Snap definition file.
+The generator reads either the [release index](https://nodejs.org/download/release/index.tab) or [nightly index](https://nodejs.org/download/nightly/index.tab). It selects the newest entry containing every artifact required by that branch, skipping newer incomplete entries. It then requires each selected filename in the release's `SHASUMS256.txt` and embeds the checksums in snapcraft.yaml.
 
-In most cases, building a new snapcraft.yaml file will result in the same file already in this repository. But when there is a new release for that release line, the file will differ. When it differs it is committed and pushed back to this repository on the appropriate branch.
+When snapcraft.yaml changes, the workflow commits and pushes it to the corresponding GitHub branch. The same branch tip is always pushed to Launchpad, allowing a prior failed synchronization to recover on the next run. Workflow runs do not trigger from their own pushes.
 
-When changes are made, the commit is _also_ pushed to Launchpad to build the Snap.
+### Runtime artifacts and architectures
+
+On amd64, arm64 and s390x, the Snap packages Node.js' official Linux binaries without changing their ELF interpreter or runtime search paths. These binaries retain Node.js' upstream Linux ABI baseline and load libc and libstdc++ from the host, matching a normally installed Node.js runtime. Node.js 25 and later also require `libatomic.so.1`; the Snap provides only that library in an isolated directory without redirecting other runtime libraries.
+
+Node.js does not publish an armv7 Linux binary from Node.js 24 onward. The armhf Snap therefore remains an Experimental source build and uses Snapcraft's architecture-aware ELF patching against the base Snap. Node.js 22 uses its official armv7l artifact instead. This split also provides a documented source-build path for future Experimental architectures without weakening the supported architectures' compatibility.
+
+The Snap prepends its direct `bin` directory to `PATH` so npm lifecycle scripts and child processes resolve `node`, `npm` and `npx` without re-entering the `/snap/bin` launcher. This does not affect external programs that explicitly invoke `/snap/bin/node`.
 
 ### Building Snaps
 
@@ -93,9 +99,9 @@ The process for adding new release lines when the Node.js Release team begin one
 
 1. Request a new Track for the "node" Snap in the Snapcraft forum in the ["Store requests" section](https://forum.snapcraft.io/c/store-requests). The track should be the major release line number (e.g. `14`). The "node" Snap has fast-track approval and is usually authorized within 24 hours by the administrators. This step needs to be performed in order to upload to a new track. An example of this for `14` can be seen here: https://forum.snapcraft.io/t/track-request-for-node-14-fast-track-please/16842/3
 2. Create a new branch in this repository, named `nodeXX` where `XX` is the release line number.
-3. Edit [snapcraft.yaml.sh](./snapcraft.yaml.sh) _if_ required for system configuration required to build the new version. In most cases this is not necessary and the `main` version can be copied. Where the compiler minimums change, the equivalent changes may need to be made in the script.
+3. Edit [snapcraft.yaml.sh](./snapcraft.yaml.sh) if artifact availability or the Experimental source-build toolchain differs from `main`. In most cases the `main` version can be copied unchanged.
 4. Edit [.github/workflows/cron.yml](./.github/workflows/cron.yml) to add the new release line to the matrix.
-5. Start a build (manually, or wait for the GitHub Action to trigger by cron), which will update the snapcraft.yaml file for that branch correctly _and_ push the new branch to https://code.launchpad.net/node-snap where it can be further configured.
+5. Run the GitHub workflow manually or wait for its hourly schedule. It will update snapcraft.yaml and push the branch to https://code.launchpad.net/node-snap.
 6. Navigate to https://code.launchpad.net/node-snap and into the new branch and click on "Create snap package".
   - The "name" should be the same as the branch
   - The "series" should be inferred from snapcraft.yaml
