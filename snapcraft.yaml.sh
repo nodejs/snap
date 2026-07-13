@@ -3,7 +3,6 @@
 set -euxo pipefail
 
 __dirname="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-UPDATE_GIT=no
 
 select_node_version() {
   local index_url="$1"
@@ -65,7 +64,7 @@ checksum_for() {
 NODE_REQUIRED_FILES="src,linux-arm64,linux-s390x,linux-x64"
 NODE_ARMHF_MODE=source
 
-while getopts "r:g:" opt; do
+while getopts ":r:" opt; do
   case $opt in
     r)
       echo "Updating for latest $OPTARG release" >&2
@@ -77,18 +76,13 @@ while getopts "r:g:" opt; do
       fi
       NODE_VERSION="$(select_node_version "https://nodejs.org/download/release/index.tab" "$OPTARG" "$NODE_REQUIRED_FILES")"
       ;;
-    g)
-      echo "Pushing to git $OPTARG" >&2
-      UPDATE_GIT=yes
-      GIT_BRANCH=$OPTARG
-      REMOTE_BRANCH=$GIT_BRANCH
-      if [ "X${GIT_BRANCH}" = "Xmain" ]; then
-        REMOTE_BRANCH=master
-      fi
+    :)
+      echo "Option -$OPTARG requires an argument" >&2
+      exit 1
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
-      exit
+      exit 1
   esac
 done
 
@@ -115,19 +109,10 @@ if [ "$NODE_ARMHF_MODE" = "prebuilt" ]; then
   NODE_ARMHF_CHECKSUM="$(checksum_for "$NODE_ARMHF_ARCHIVE")"
 fi
 
-
 echo "NODE_VERSION=$NODE_VERSION"
 echo "NODE_DISTTYPE=$NODE_DISTTYPE"
 echo "NODE_TAG=$NODE_TAG"
 
-if [ "X${UPDATE_GIT}" = "Xyes" ]; then
-  git clean -fdx
-  git reset HEAD --hard
-  git fetch origin
-  git checkout "origin/$GIT_BRANCH" --force
-  git branch -D "$GIT_BRANCH" || true
-  git checkout -b "$GIT_BRANCH"
-fi
 
 # Write snapcraft.yaml for this config
 
@@ -263,9 +248,3 @@ parts:
       echo "prefix = /usr/local" >> "\$CRAFT_PART_INSTALL/etc/npmrc"
 EOF
 
-if [ "X${UPDATE_GIT}" = "Xyes" ] && [ -n "$(git status --porcelain "$__dirname")" ]; then
-  echo "Updating git repo and pushing ..."
-  git commit "$__dirname" -m "snap: (auto) updated to ${NODE_VERSION}"
-  git push origin "$GIT_BRANCH"
-  git push launchpad "$GIT_BRANCH:$REMOTE_BRANCH"
-fi
