@@ -1,5 +1,5 @@
 name: node
-version: '26.8.0'
+version: '26.8.1'
 summary: Node.js
 description: |
   A JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, npm, is the largest ecosystem of open source libraries in the world. https://nodejs.org/
@@ -31,16 +31,16 @@ parts:
     override-pull: |
       case "$CRAFT_ARCH_BUILD_FOR" in
         amd64)
-          archive="node-v26.8.0-linux-x64.tar.xz"
-          checksum="47864ed43f4cf938cbd41cf88a49587484888295689a4b75977a0a2717702ed9"
+          archive="node-v26.8.1-linux-x64.tar.xz"
+          checksum="3e301118d7df53d563b7e96c1617545f26e2f76f9724be668d6cab65c15dda5d"
           ;;
         arm64)
-          archive="node-v26.8.0-linux-arm64.tar.xz"
-          checksum="7810e03acad8a592bb565e7875ccdb8b426d159888d462666a3130df64bde3e8"
+          archive="node-v26.8.1-linux-arm64.tar.xz"
+          checksum="23c1b4d19e2f12a7d06fe8aa3d6e0e4923cf77a47e13c5ccdf32fadaa33960f2"
           ;;
         s390x)
-          archive="node-v26.8.0-linux-s390x.tar.xz"
-          checksum="d9c267885210657e01f4a820998e18647c262f24156fe30c86819e6cb8376b06"
+          archive="node-v26.8.1-linux-s390x.tar.xz"
+          checksum="23ba220067109fe42e23ed35621ba2645f0cbbf683d4844a234ad27d03640bc0"
           ;;
         armhf)
           if [ "source" != "prebuilt" ]; then
@@ -55,7 +55,7 @@ parts:
           ;;
       esac
       cd "$CRAFT_PART_SRC"
-      curl -sSL --show-error --fail --proto '=https' --tlsv1.2         --output "$archive" "https://nodejs.org/download/release/v26.8.0/$archive"
+      curl -sSL --show-error --fail --proto '=https' --tlsv1.2         --output "$archive" "https://nodejs.org/download/release/v26.8.1/$archive"
       echo "$checksum  $archive" | sha256sum --check --strict -
       tar -xJf "$archive" --strip-components=1
       rm "$archive"
@@ -109,9 +109,9 @@ parts:
         exit 0
       fi
       cd "$CRAFT_PART_SRC"
-      archive="node-v26.8.0.tar.xz"
-      curl -sSL --show-error --fail --proto '=https' --tlsv1.2         --output "$archive" "https://nodejs.org/download/release/v26.8.0/$archive"
-      echo "2287613caa71f9ab8dff4cbec7da32f0fae3e8807a6876a77764acc16d4cca4c  $archive" | sha256sum --check --strict -
+      archive="node-v26.8.1.tar.xz"
+      curl -sSL --show-error --fail --proto '=https' --tlsv1.2         --output "$archive" "https://nodejs.org/download/release/v26.8.1/$archive"
+      echo "d1698832a1a10f050cdda044a3e3d6a748246811e2e7bc89ba9a8bd693dc45f2  $archive" | sha256sum --check --strict -
       tar -xJf "$archive" --strip-components=1
       rm "$archive"
     override-build: |
