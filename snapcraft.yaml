@@ -1,5 +1,5 @@
 name: node
-version: '27.0.0-nightly202610032bcc5dd2'
+version: '27.0.0-nightly2026100404904eb4'
 summary: Node.js
 description: |
   A JavaScript runtime built on Chrome's V8 JavaScript engine. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient. Node.js' package ecosystem, npm, is the largest ecosystem of open source libraries in the world. https://nodejs.org/
@@ -31,16 +31,16 @@ parts:
     override-pull: |
       case "$CRAFT_ARCH_BUILD_FOR" in
         amd64)
-          archive="node-v27.0.0-nightly202610032bcc5dd2ee-linux-x64.tar.xz"
-          checksum="982842e16c869fc9cd64523eb5183d18da462ce5b1d76ddadc817c5bd0cd582c"
+          archive="node-v27.0.0-nightly2026100404904eb4ca-linux-x64.tar.xz"
+          checksum="70de9fca6044c260deac72ad8dafc8696f18144d83a2f9736ebaf170c8d26efe"
           ;;
         arm64)
-          archive="node-v27.0.0-nightly202610032bcc5dd2ee-linux-arm64.tar.xz"
-          checksum="eb700c63b8152ebe06b7e088fddc2a54cccd9eccf1e92cc332972de5e505eab8"
+          archive="node-v27.0.0-nightly2026100404904eb4ca-linux-arm64.tar.xz"
+          checksum="5a5c5de6e13035ca5d0995d5d9d532c2730c1b5dd8789f116202eb26fc239766"
           ;;
         s390x)
-          archive="node-v27.0.0-nightly202610032bcc5dd2ee-linux-s390x.tar.xz"
-          checksum="cec49dca40939546832cd7f6645d1264e859f5590bbf841e386450b1e21df5fe"
+          archive="node-v27.0.0-nightly2026100404904eb4ca-linux-s390x.tar.xz"
+          checksum="8bb990180d6d8ddc922dd102b80d336dad528fd178f05fd69ceaacc6d960a225"
           ;;
         armhf)
           if [ "source" != "prebuilt" ]; then
@@ -55,7 +55,7 @@ parts:
           ;;
       esac
       cd "$CRAFT_PART_SRC"
-      curl -sSL --show-error --fail --proto '=https' --tlsv1.2         --output "$archive" "https://nodejs.org/download/nightly/v27.0.0-nightly202610032bcc5dd2ee/$archive"
+      curl -sSL --show-error --fail --proto '=https' --tlsv1.2         --output "$archive" "https://nodejs.org/download/nightly/v27.0.0-nightly2026100404904eb4ca/$archive"
       echo "$checksum  $archive" | sha256sum --check --strict -
       tar -xJf "$archive" --strip-components=1
       rm "$archive"
@@ -109,9 +109,9 @@ parts:
         exit 0
       fi
       cd "$CRAFT_PART_SRC"
-      archive="node-v27.0.0-nightly202610032bcc5dd2ee.tar.xz"
-      curl -sSL --show-error --fail --proto '=https' --tlsv1.2         --output "$archive" "https://nodejs.org/download/nightly/v27.0.0-nightly202610032bcc5dd2ee/$archive"
-      echo "ba3d17beb06ab873488a12c1559c9f7785fb2cc1610b5f8e1256146a7ad08f7e  $archive" | sha256sum --check --strict -
+      archive="node-v27.0.0-nightly2026100404904eb4ca.tar.xz"
+      curl -sSL --show-error --fail --proto '=https' --tlsv1.2         --output "$archive" "https://nodejs.org/download/nightly/v27.0.0-nightly2026100404904eb4ca/$archive"
+      echo "c9c10324f6516c78cd866950c8cef99aeda9f4e3b8b7db3656d003ca176139b9  $archive" | sha256sum --check --strict -
       tar -xJf "$archive" --strip-components=1
       rm "$archive"
     override-build: |
@@ -119,7 +119,7 @@ parts:
         exit 0
       fi
       rustup toolchain install "$RUSTUP_TOOLCHAIN" --profile minimal
-      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly202610032bcc5dd2ee --v8-enable-temporal-support
+      ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/nightly/ --tag=nightly2026100404904eb4ca --v8-enable-temporal-support
       craftctl default
       mkdir -p "$CRAFT_PART_INSTALL/etc"
       echo "prefix = /usr/local" >> "$CRAFT_PART_INSTALL/etc/npmrc"
