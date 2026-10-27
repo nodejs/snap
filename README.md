@@ -73,7 +73,7 @@ This repository uses GitHub Actions on a timer (cron) schedule. See [.github/wor
 
 Upon run, for each branch, this repository is cloned and the snapcraft.yaml.sh script is run with arguments that tell it what to do. `-rXX` is supplied to specify the release line (e.g. `-r14`, this is omitted for "edge" releases) and `-gnode14` is supplied to specify the Git branch to operate on (more on this below).
 
-The snapcraft.yaml.sh script will fetch the relevant releases list, either https://nodejs.org/download/release/index.tab for regular releases, or https://nodejs.org/download/nightly/index.tab for "edge" releases. The latest release for the given release line (or latest nightly release) is then used to build the snapcraft.yaml Snap definition file.
+The snapcraft.yaml.sh script will fetch the relevant releases list, either https://nodejs.org/download/release/index.tab for regular releases, or https://nodejs.org/download/nightly/index.tab for "edge" releases. The latest release for the given release line (or latest nightly release) is then used to build the snapcraft.yaml Snap definition file. If the selected version is older than the one already in snapcraft.yaml for the same index, for example because a cached copy of the index is stale, the generator keeps the existing definition so the published Snap never moves backwards.
 
 In most cases, building a new snapcraft.yaml file will result in the same file already in this repository. But when there is a new release for that release line, the file will differ. When it differs it is committed and pushed back to this repository on the appropriate branch.
 
