@@ -5,6 +5,18 @@ set -euxo pipefail
 __dirname="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UPDATE_GIT=no
 
+is_older_version() {
+  local candidate="$1"
+  local current="$2"
+
+  # Nightlies are ordered by build date, the trailing commit hash has no order
+  candidate="$(sed -E 's/(-nightly[0-9]{8}).*$/\1/' <<< "$candidate")"
+  current="$(sed -E 's/(-nightly[0-9]{8}).*$/\1/' <<< "$current")"
+
+  [ "$candidate" != "$current" ] &&
+    printf '%s\n%s\n' "$candidate" "$current" | sort -C -V
+}
+
 while getopts "r:g:" opt; do
   case $opt in
     r)
@@ -35,6 +47,20 @@ if [ -z ${NODE_DISTTYPE+x} ]; then
   NODE_VERSION="$(curl -sL --show-error --fail https://nodejs.org/download/nightly/index.tab | awk 'BEGIN { found = 0 } /^v[1-9].*[^a-z0-9]src[^a-z0-9]/ && !found { found = 1; print substr($1, 2) }')"
   NODE_DISTTYPE="nightly"
   NODE_TAG="$(echo "$NODE_VERSION" | sed -E 's/^[^-]+-//')"
+fi
+
+NODE_DOWNLOAD_BASE="https://nodejs.org/download/${NODE_DISTTYPE}/v${NODE_VERSION}"
+
+# A stale cached index can select an older version than the one already
+# published; never move the definition backwards
+CURRENT_DOWNLOAD_BASE="$(grep -oE -m1 'https://nodejs\.org/download/(release|nightly)/v[^/"]+' "${__dirname}/snapcraft.yaml" || true)"
+if [ "${CURRENT_DOWNLOAD_BASE%/v*}" = "${NODE_DOWNLOAD_BASE%/v*}" ]; then
+  CURRENT_VERSION="${CURRENT_DOWNLOAD_BASE##*/v}"
+  if is_older_version "$NODE_VERSION" "$CURRENT_VERSION"; then
+    echo "Selected $NODE_VERSION is older than current $CURRENT_VERSION, keeping snapcraft.yaml" >&2
+    echo "NODE_VERSION=$CURRENT_VERSION"
+    exit 0
+  fi
 fi
 
 echo "NODE_VERSION=$NODE_VERSION"
