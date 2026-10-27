@@ -61,6 +61,18 @@ checksum_for() {
   ' <<< "$NODE_SHASUMS"
 }
 
+is_older_version() {
+  local candidate="$1"
+  local current="$2"
+
+  # Nightlies are ordered by build date, the trailing commit hash has no order
+  candidate="$(sed -E 's/(-nightly[0-9]{8}).*$/\1/' <<< "$candidate")"
+  current="$(sed -E 's/(-nightly[0-9]{8}).*$/\1/' <<< "$current")"
+
+  [ "$candidate" != "$current" ] &&
+    printf '%s\n%s\n' "$candidate" "$current" | sort -C -V
+}
+
 NODE_REQUIRED_FILES="src,linux-arm64,linux-s390x,linux-x64"
 NODE_ARMHF_MODE=source
 
@@ -93,6 +105,19 @@ if [ -z ${NODE_DISTTYPE+x} ]; then
 fi
 
 NODE_DOWNLOAD_BASE="https://nodejs.org/download/${NODE_DISTTYPE}/v${NODE_VERSION}"
+
+# A stale cached index can select an older version than the one already
+# published; never move the definition backwards
+CURRENT_DOWNLOAD_BASE="$(grep -oE -m1 'https://nodejs\.org/download/(release|nightly)/v[^/"]+' "${__dirname}/snapcraft.yaml" || true)"
+if [ "${CURRENT_DOWNLOAD_BASE%/v*}" = "${NODE_DOWNLOAD_BASE%/v*}" ]; then
+  CURRENT_VERSION="${CURRENT_DOWNLOAD_BASE##*/v}"
+  if is_older_version "$NODE_VERSION" "$CURRENT_VERSION"; then
+    echo "Selected $NODE_VERSION is older than current $CURRENT_VERSION, keeping snapcraft.yaml" >&2
+    echo "NODE_VERSION=$CURRENT_VERSION"
+    exit 0
+  fi
+fi
+
 NODE_SHASUMS="$(curl -sL --show-error --fail "${NODE_DOWNLOAD_BASE}/SHASUMS256.txt")"
 NODE_SOURCE_ARCHIVE="node-v${NODE_VERSION}.tar.xz"
 NODE_X64_ARCHIVE="node-v${NODE_VERSION}-linux-x64.tar.xz"
