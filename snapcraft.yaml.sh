@@ -222,7 +222,6 @@ parts:
       - CC: gcc-14
       - CXX: g++-14
       - LINK: g++-14
-      - RUSTUP_TOOLCHAIN: "1.83.0"
       - V: ""
     make-parameters:
       - V=
@@ -241,7 +240,10 @@ parts:
       if [ "${NODE_ARMHF_MODE}" != "source" ] || [ "\$CRAFT_ARCH_BUILD_FOR" != "armhf" ]; then
         exit 0
       fi
-      rustup toolchain install "\$RUSTUP_TOOLCHAIN" --profile minimal
+      # Install the minimum Rust version declared by this Node.js release
+      rust_version="\$(sed -nE 's/^rust-version = "([0-9.]+)"\$/\1/p' deps/crates/Cargo.toml)"
+      rustup toolchain install "\$rust_version" --profile minimal
+      rustup default "\$rust_version"
       ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/${NODE_DISTTYPE}/ --tag=${NODE_TAG} --v8-enable-temporal-support
       craftctl default
       mkdir -p "\$CRAFT_PART_INSTALL/etc"
