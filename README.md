@@ -73,7 +73,7 @@ This repository uses an hourly or manually dispatched GitHub Actions workflow. S
 
 For each branch, the workflow checks out its current tip and runs snapcraft.yaml.sh. `-rXX` selects a release line (for example, `-r24`); the option is omitted for edge releases.
 
-The generator reads either the [release index](https://nodejs.org/download/release/index.tab) or [nightly index](https://nodejs.org/download/nightly/index.tab). It selects the newest entry containing every artifact required by that branch, skipping newer incomplete entries. It then requires each selected filename in the release's `SHASUMS256.txt` and embeds the checksums in snapcraft.yaml.
+The generator reads either the [release index](https://nodejs.org/download/release/index.tab) or [nightly index](https://nodejs.org/download/nightly/index.tab). It selects the newest entry containing every artifact required by that branch, skipping newer incomplete entries. It then requires each selected filename in the release's `SHASUMS256.txt` and embeds the checksums in snapcraft.yaml. If the selected version is older than the one already in snapcraft.yaml for the same index, for example because a cached copy of the index is stale, the generator keeps the existing definition so the published Snap never moves backwards.
 
 When snapcraft.yaml changes, the workflow commits and pushes it to the corresponding GitHub branch. The same branch tip is always pushed to Launchpad, allowing a prior failed synchronization to recover on the next run. Workflow runs do not trigger from their own pushes.
 
