@@ -81,7 +81,7 @@ When snapcraft.yaml changes, the workflow commits and pushes it to the correspon
 
 On amd64, arm64 and s390x, the Snap packages Node.js' official Linux binaries without changing their ELF interpreter or runtime search paths. These binaries retain Node.js' upstream Linux ABI baseline and load libc and libstdc++ from the host, matching a normally installed Node.js runtime. Node.js 25 and later also require `libatomic.so.1`; the Snap provides only that library in an isolated directory without redirecting other runtime libraries.
 
-Node.js does not publish an armv7 Linux binary from Node.js 24 onward. The armhf Snap therefore remains an Experimental source build and uses Snapcraft's architecture-aware ELF patching against the base Snap. Node.js 22 uses its official armv7l artifact instead. This split also provides a documented source-build path for future Experimental architectures without weakening the supported architectures' compatibility.
+Node.js does not publish an armv7 Linux binary from Node.js 24 onward. The armhf Snap therefore remains an Experimental source build and uses Snapcraft's architecture-aware ELF patching against the base Snap. Temporal support needs Rust, so the build installs the minimum Rust version that the release declares in `deps/crates/Cargo.toml`. Node.js 22 uses its official armv7l artifact instead. This split also provides a documented source-build path for future Experimental architectures without weakening the supported architectures' compatibility.
 
 The Snap prepends its direct `bin` directory to `PATH` so npm lifecycle scripts and child processes resolve `node`, `npm` and `npx` without re-entering the `/snap/bin` launcher. This does not affect external programs that explicitly invoke `/snap/bin/node`.
 
