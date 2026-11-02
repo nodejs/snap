@@ -154,7 +154,7 @@ base: core24
 
 environment:
   PATH: '\$SNAP/bin:\$PATH'
-  LD_LIBRARY_PATH: '\$SNAP/lib/runtime'
+  LD_LIBRARY_PATH: '\$SNAP/lib/runtime\${LD_LIBRARY_PATH:+:\$LD_LIBRARY_PATH}'
 
 apps:
   node:
