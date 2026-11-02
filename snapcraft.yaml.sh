@@ -267,6 +267,7 @@ parts:
       fi
       # Install the minimum Rust version declared by this Node.js release
       rust_version="\$(sed -nE 's/^rust-version = "([0-9.]+)"\$/\1/p' deps/crates/Cargo.toml)"
+      [ -n "\$rust_version" ] || { echo "rust-version not found in deps/crates/Cargo.toml" >&2; exit 1; }
       rustup toolchain install "\$rust_version" --profile minimal
       rustup default "\$rust_version"
       ./configure --verbose --prefix=/ --release-urlbase=https://nodejs.org/download/${NODE_DISTTYPE}/ --tag=${NODE_TAG} --v8-enable-temporal-support
