@@ -53,7 +53,8 @@ jobs:
           chmod 600 ~/.ssh/launchpad_rsa
           # In ephemeral environments like GitHub Action runners, relying on TOFU isn't providing any security
           # so require the key obtained by `ssh-keyscan` to match the expected hash from https://help.launchpad.net/SSHFingerprints
-          ssh-keyscan git.launchpad.net >> ~/.ssh/known_hosts
+          # Only fetch the RSA key so that no unverified key of another type is trusted
+          ssh-keyscan -t rsa git.launchpad.net >> ~/.ssh/known_hosts
           ssh-keygen -qlF git.launchpad.net | grep -xF 'git.launchpad.net RSA SHA256:UNOzlP66WpDuEo34Wgs8mewypV0UzqHLsIFoqwe8dYo'
 
       - name: Generate Snap definition
